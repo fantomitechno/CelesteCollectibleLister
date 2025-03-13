@@ -100,27 +100,41 @@ def end_on_heart(data: dict):
     return False
 
 
-for m in maps:
-    print(f"Scanning {m}...")
+def fuse_database(database: dict):
+    new_db = {}
+    for mod_db in database["result"].values():
+        for k, v in mod_db.items():
+            new_db[k] = v
+    return new_db
 
-    parsed = read_map(m)
-    print(f"Map read...")
-    entities_by_room = list(map(lambda x: x["entities"], parsed["map"]["rooms"]))
 
-    map_data, excluded_data = count_entities(entities_by_room)
-    total = get_totals(map_data)
-    total_excluded = get_totals(excluded_data)
+if __name__ == "__main__":
+    with open(".cache/entity_database.json") as db:
+        database = fuse_database(json.loads(str(db.read())))
+    for m in maps:
+        print(f"Scanning {m}...")
 
-    print(f"Scanning result:\n")
-    print(f"End On Heart: {end_on_heart(parsed["data"])}")
+        parsed = read_map(m)
+        print(f"Map read...")
+        entities_by_room = list(map(lambda x: x["entities"], parsed["map"]["rooms"]))
 
-    print(f"Found: {total} entities (excluded: {total_excluded} entities")
-    for k, v in map_data.items():
-        print(f" - {k}: x{v}")
+        map_data, excluded_data = count_entities(entities_by_room)
+        total = get_totals(map_data)
+        total_excluded = get_totals(excluded_data)
 
-    if total_excluded:
-        with open(f".cache/{m.replace(".bin","")}", "w+") as f:
-            f.write(str(excluded_data))
-    print()
+        print(f"Scanning result:\n")
+        print(f"End On Heart: {end_on_heart(parsed["data"])}")
 
-    input("Press enter to scan the next map")
+        print(f"Found: {total} entities (excluded: {total_excluded} entities")
+        for k, v in map_data.items():
+            if database.get(k):
+                print(f" - {database[k]}: x{v}")
+            else:
+                print(f" - {k}: x{v}")
+
+        if total_excluded:
+            with open(f".cache/{m.replace(".bin","")}", "w+") as f:
+                f.write(str(excluded_data))
+        print()
+
+        input("Press enter to scan the next map")
