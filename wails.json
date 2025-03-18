@@ -1,0 +1,14 @@
+{
+  "$schema": "https://wails.io/schemas/config.v2.json",
+  "name": "Celeste Collectible Lister",
+  "outputfilename": "CelesteCollectibleLister",
+  "frontend:install": "npm install",
+  "frontend:build": "npm run build",
+  "frontend:dev:watcher": "npm run dev",
+  "frontend:dev:serverUrl": "auto",
+  "author": {
+    "name": "Simon - fantomitechno",
+    "email": "simon@renoux.dev"
+  },
+  "wailsjsdir": "./frontend/src/lib"
+}
